@@ -3,7 +3,7 @@ Collection of different grafana dashboards
 
 ## Populate .env file with your values
 ```bash
-cat << 'EOF' > .env.test
+cat << 'EOF' > .env
 COMPOSE_PROJECT_NAME=tig_stack_fortinet
 
 # Influxdb-v2
