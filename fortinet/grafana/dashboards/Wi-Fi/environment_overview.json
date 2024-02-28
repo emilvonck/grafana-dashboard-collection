@@ -63,6 +63,7 @@
                             "mode": "off"
                         }
                     },
+                    "decimals": 0,
                     "mappings": [ ],
                     "min": 0,
                     "thresholds": {
@@ -336,10 +337,10 @@
                 "current": {
                     "selected": true,
                     "text": [
-                        "All"
+                        "192.168.8.1"
                     ],
                     "value": [
-                        "$__all"
+                        "192.168.8.1"
                     ]
                 },
                 "datasource": {
