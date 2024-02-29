@@ -1,4 +1,4 @@
-# grafana-dashboard-collection
+# Fortinet
 Collection of different grafana dashboards
 
 ## Populate .env file with your values
