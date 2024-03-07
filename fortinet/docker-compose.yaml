@@ -15,6 +15,7 @@ services:
   telegraf:
     image: telegraf:1.29.5
     container_name: telegraf
+    hostname: telegraf
     env_file:
       - ./.env
     volumes:
