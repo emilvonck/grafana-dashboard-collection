@@ -48,8 +48,7 @@
                                 "value": null
                             }
                         ]
-                    },
-                    "unitScale": true
+                    }
                 },
                 "overrides": [
                     {
@@ -96,10 +95,9 @@
                 "y": 0
             },
             "id": 1,
-            "links": [ ],
             "options": {
                 "colorMode": "background",
-                "graphMode": "area",
+                "graphMode": "none",
                 "justifyMode": "auto",
                 "orientation": "auto",
                 "reduceOptions": {
@@ -113,7 +111,7 @@
                 "textMode": "value_and_name",
                 "wideLayout": true
             },
-            "pluginVersion": "10.3.3",
+            "pluginVersion": "10.4.0",
             "targets": [
                 {
                     "datasource": {
@@ -135,7 +133,7 @@
         "list": [ ]
     },
     "time": {
-        "from": "now-6h",
+        "from": "now-5m",
         "to": "now"
     },
     "timepicker": { },
