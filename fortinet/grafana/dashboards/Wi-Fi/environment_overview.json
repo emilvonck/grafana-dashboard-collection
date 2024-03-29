@@ -1,0 +1,432 @@
+{
+    "annotations": {
+        "list": [
+            {
+                "builtIn": 1,
+                "datasource": {
+                    "type": "grafana",
+                    "uid": "-- Grafana --"
+                },
+                "enable": true,
+                "hide": true,
+                "iconColor": "rgba(0, 211, 255, 1)",
+                "name": "Annotations & Alerts",
+                "type": "dashboard"
+            }
+        ]
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "links": [ ],
+    "liveNow": false,
+    "panels": [
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P1F56AAD66C29AD97"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisBorderShow": false,
+                        "axisCenteredZero": false,
+                        "axisColorMode": "text",
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "drawStyle": "line",
+                        "fillOpacity": 23,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "insertNulls": false,
+                        "lineInterpolation": "linear",
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "auto",
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "decimals": 0,
+                    "mappings": [ ],
+                    "min": 0,
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unit": "short",
+                    "unitScale": true
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byFrameRefID",
+                            "options": "up"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Connected"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byFrameRefID",
+                            "options": "idle"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Idle"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byFrameRefID",
+                            "options": "total"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Total"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Idle"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "red",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 21,
+                "w": 9,
+                "x": 0,
+                "y": 0
+            },
+            "hideTimeOverride": false,
+            "id": 1,
+            "options": {
+                "legend": {
+                    "calcs": [
+                        "last",
+                        "min",
+                        "max"
+                    ],
+                    "displayMode": "table",
+                    "placement": "right",
+                    "showLegend": true,
+                    "sortBy": "Max",
+                    "sortDesc": true
+                },
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "pluginVersion": "10.2.2",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P1F56AAD66C29AD97"
+                    },
+                    "query": "from(bucket: \"fortios_monitor_wifi_controller\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"managed_ap_stats\")\n  |> filter(fn: (r) => r[\"_field\"] == \"status\")\n  |> filter(fn: (r) => r[\"_value\"] == \"connected\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> group(columns: [\"_time\"])\n  |> count()\n  |> group()\n  |> yield(name: \"last\")",
+                    "refId": "up"
+                },
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P1F56AAD66C29AD97"
+                    },
+                    "hide": false,
+                    "query": "from(bucket: \"fortios_monitor_wifi_controller\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"managed_ap_stats\")\n  |> filter(fn: (r) => r[\"_field\"] == \"status\")\n  |> filter(fn: (r) => r[\"_value\"] == \"disconnected\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> group(columns: [\"_time\"])\n  |> count()\n  |> group()\n  |> yield(name: \"last\")",
+                    "refId": "idle"
+                },
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P1F56AAD66C29AD97"
+                    },
+                    "hide": false,
+                    "query": "from(bucket: \"fortios_monitor_wifi_controller\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"managed_ap_stats\")\n  |> filter(fn: (r) => r[\"_field\"] == \"status\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> group(columns: [\"_time\"])\n  |> count()\n  |> group()\n  |> yield(name: \"last\")",
+                    "refId": "total"
+                }
+            ],
+            "title": "AP state (${__from:date:YYYY-MM-DD HH:mm:ss} - ${__to:date:YYYY-MM-DD HH:mm:ss})",
+            "transformations": [
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {
+                            "_field": false,
+                            "_measurement": true,
+                            "_start": true,
+                            "_stop": true,
+                            "host": true,
+                            "host_hostname": true,
+                            "id": true,
+                            "serial_number": true
+                        },
+                        "indexByName": {
+                            "_field": 3,
+                            "_measurement": 4,
+                            "_start": 1,
+                            "_stop": 2,
+                            "_value": 9,
+                            "device": 0,
+                            "host": 5,
+                            "host_hostname": 6,
+                            "id": 7,
+                            "name": 8
+                        },
+                        "renameByName": {
+                            "_field": "Measurement",
+                            "_value": "Sum",
+                            "device": "Hostname",
+                            "hostname": "Hostname",
+                            "interface": "Interface",
+                            "name": "Interface"
+                        }
+                    }
+                }
+            ],
+            "type": "timeseries"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P1F56AAD66C29AD97"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "custom": {
+                        "fillOpacity": 70,
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "insertNulls": false,
+                        "lineWidth": 0,
+                        "spanNulls": false
+                    },
+                    "displayName": "${__field.labels.name}",
+                    "mappings": [ ],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unitScale": true
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "status"
+                        },
+                        "properties": [
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {
+                                        "options": {
+                                            "connected": {
+                                                "color": "green",
+                                                "index": 1,
+                                                "text": "Connected"
+                                            },
+                                            "disconnected": {
+                                                "color": "red",
+                                                "index": 0,
+                                                "text": "Disconnected"
+                                            }
+                                        },
+                                        "type": "value"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 30,
+                "w": 15,
+                "x": 9,
+                "y": 0
+            },
+            "id": 2,
+            "options": {
+                "alignValue": "left",
+                "legend": {
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                },
+                "mergeValues": true,
+                "rowHeight": 0.9,
+                "showValue": "auto",
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P1F56AAD66C29AD97"
+                    },
+                    "query": "from(bucket: \"fortios_monitor_wifi_controller\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"managed_ap_stats\")\n  |> filter(fn: (r) => r[\"name\"] =~ /\\b${ap_name:regex}\\b/)\n  |> filter(fn: (r) => r[\"_field\"] == \"status\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+                    "refId": "A"
+                }
+            ],
+            "title": "AP state  $ap_name (${__from:date:YYYY-MM-DD HH:mm:ss} - ${__to:date:YYYY-MM-DD HH:mm:ss})",
+            "type": "state-timeline"
+        }
+    ],
+    "refresh": "",
+    "schemaVersion": 39,
+    "tags": [ ],
+    "templating": {
+        "list": [
+            {
+                "current": {
+                    "selected": true,
+                    "text": [
+                        "192.168.8.1"
+                    ],
+                    "value": [
+                        "192.168.8.1"
+                    ]
+                },
+                "datasource": {
+                    "type": "influxdb",
+                    "uid": "P1F56AAD66C29AD97"
+                },
+                "definition": "import \"influxdata/influxdb/schema\"\n\nschema.tagValues(bucket: \"fortios_monitor_wifi_controller\", tag: \"controller\")",
+                "hide": 0,
+                "includeAll": true,
+                "label": "Controller",
+                "multi": true,
+                "name": "wlc",
+                "options": [ ],
+                "query": "import \"influxdata/influxdb/schema\"\n\nschema.tagValues(bucket: \"fortios_monitor_wifi_controller\", tag: \"controller\")",
+                "refresh": 1,
+                "regex": "",
+                "skipUrlSync": false,
+                "sort": 0,
+                "type": "query"
+            },
+            {
+                "current": {
+                    "selected": true,
+                    "text": [
+                        "All"
+                    ],
+                    "value": [
+                        "$__all"
+                    ]
+                },
+                "datasource": {
+                    "type": "influxdb",
+                    "uid": "P1F56AAD66C29AD97"
+                },
+                "definition": "import \"influxdata/influxdb/schema\"\n\nschema.tagValues(bucket: \"fortios_monitor_wifi_controller\", tag: \"ap_group\", predicate: (r) => r.controller == \"$wlc\")",
+                "hide": 0,
+                "includeAll": true,
+                "label": "AP Group",
+                "multi": true,
+                "name": "ap_group",
+                "options": [ ],
+                "query": "import \"influxdata/influxdb/schema\"\n\nschema.tagValues(bucket: \"fortios_monitor_wifi_controller\", tag: \"ap_group\", predicate: (r) => r.controller == \"$wlc\")",
+                "refresh": 1,
+                "regex": "",
+                "skipUrlSync": false,
+                "sort": 0,
+                "type": "query"
+            },
+            {
+                "current": {
+                    "selected": true,
+                    "text": [
+                        "All"
+                    ],
+                    "value": [
+                        "$__all"
+                    ]
+                },
+                "datasource": {
+                    "type": "influxdb",
+                    "uid": "P1F56AAD66C29AD97"
+                },
+                "definition": "import \"influxdata/influxdb/schema\"\n\nschema.tagValues(bucket: \"fortios_monitor_wifi_controller\", tag: \"name\", predicate: (r) => r.controller == \"$wlc\" and r.ap_group == \"$ap_group\")",
+                "hide": 0,
+                "includeAll": true,
+                "label": "AP Name",
+                "multi": true,
+                "name": "ap_name",
+                "options": [ ],
+                "query": "import \"influxdata/influxdb/schema\"\n\nschema.tagValues(bucket: \"fortios_monitor_wifi_controller\", tag: \"name\", predicate: (r) => r.controller == \"$wlc\" and r.ap_group == \"$ap_group\")",
+                "refresh": 1,
+                "regex": "",
+                "skipUrlSync": false,
+                "sort": 0,
+                "type": "query"
+            }
+        ]
+    },
+    "time": {
+        "from": "now-30m",
+        "to": "now"
+    },
+    "timepicker": { },
+    "timezone": "",
+    "title": "Access Point Overview",
+    "uid": "df907ec7-0d65-4602-9f47-9132ed79d0c4s",
+    "version": 1,
+    "weekStart": ""
+}

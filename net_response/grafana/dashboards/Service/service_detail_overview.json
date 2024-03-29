@@ -1,0 +1,366 @@
+{
+    "annotations": {
+        "list": [
+            {
+                "builtIn": 1,
+                "datasource": {
+                    "type": "grafana",
+                    "uid": "-- Grafana --"
+                },
+                "enable": true,
+                "hide": true,
+                "iconColor": "rgba(0, 211, 255, 1)",
+                "name": "Annotations & Alerts",
+                "type": "dashboard"
+            }
+        ]
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 1,
+    "links": [ ],
+    "liveNow": false,
+    "panels": [
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P1F56AAD66C29AD97"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "displayName": "${__field.labels.server} ${__field.labels.app_func}",
+                    "mappings": [
+                        {
+                            "options": {
+                                "0": {
+                                    "color": "green",
+                                    "index": 0,
+                                    "text": "UP"
+                                },
+                                "1": {
+                                    "color": "red",
+                                    "index": 1,
+                                    "text": "Timeout"
+                                },
+                                "2": {
+                                    "color": "red",
+                                    "index": 2,
+                                    "text": "Connection failed"
+                                },
+                                "3": {
+                                    "color": "yellow",
+                                    "index": 3,
+                                    "text": "Read failed"
+                                },
+                                "4": {
+                                    "color": "yellow",
+                                    "index": 4,
+                                    "text": "String mismatch"
+                                }
+                            },
+                            "type": "value"
+                        }
+                    ],
+                    "min": 0,
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unit": "short"
+                },
+                "overrides": [ ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 6,
+                "x": 0,
+                "y": 0
+            },
+            "id": 3,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "horizontal",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showPercentChange": false,
+                "text": {
+                    "titleSize": 14,
+                    "valueSize": 20
+                },
+                "textMode": "auto",
+                "wideLayout": true
+            },
+            "pluginVersion": "10.4.0",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P1F56AAD66C29AD97"
+                    },
+                    "query": "from(bucket: \"net_response\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"app_net_response\")\n  |> filter(fn: (r) => r[\"app_name\"] =~ /\\b${app_name:regex}\\b/)\n  |> filter(fn: (r) => r[\"_field\"] == \"result_code\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+                    "refId": "A"
+                }
+            ],
+            "title": "Status TCP connection $app_name",
+            "type": "stat"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P1F56AAD66C29AD97"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisBorderShow": false,
+                        "axisCenteredZero": false,
+                        "axisColorMode": "text",
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "drawStyle": "line",
+                        "fillOpacity": 10,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "insertNulls": 5000,
+                        "lineInterpolation": "smooth",
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "auto",
+                        "spanNulls": true,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "displayName": "${__field.labels.app_func}",
+                    "mappings": [ ],
+                    "min": 0,
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unit": "s"
+                },
+                "overrides": [ ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 9,
+                "x": 6,
+                "y": 0
+            },
+            "id": 1,
+            "options": {
+                "legend": {
+                    "calcs": [
+                        "last",
+                        "min",
+                        "max"
+                    ],
+                    "displayMode": "table",
+                    "placement": "right",
+                    "showLegend": true
+                },
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P1F56AAD66C29AD97"
+                    },
+                    "query": "from(bucket: \"net_response\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"app_net_response\")\n  |> filter(fn: (r) => r[\"app_name\"] =~ /\\b${app_name:regex}\\b/)\n  |> filter(fn: (r) => r[\"_field\"] == \"response_time\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+                    "refId": "A"
+                }
+            ],
+            "title": "Response time TCP connection $app_name",
+            "type": "timeseries"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P1F56AAD66C29AD97"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "custom": {
+                        "fillOpacity": 100,
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "lineWidth": 1
+                    },
+                    "displayName": "${__field.labels.app_func}",
+                    "mappings": [
+                        {
+                            "options": {
+                                "0": {
+                                    "color": "green",
+                                    "index": 0,
+                                    "text": "UP"
+                                },
+                                "1": {
+                                    "color": "red",
+                                    "index": 1,
+                                    "text": "Timeout"
+                                },
+                                "2": {
+                                    "color": "red",
+                                    "index": 2,
+                                    "text": "Connection failed"
+                                },
+                                "3": {
+                                    "color": "yellow",
+                                    "index": 3,
+                                    "text": "Read failed"
+                                },
+                                "4": {
+                                    "color": "yellow",
+                                    "index": 4,
+                                    "text": "String mismatch"
+                                }
+                            },
+                            "type": "value"
+                        }
+                    ],
+                    "min": 0,
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unit": "short"
+                },
+                "overrides": [ ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 9,
+                "x": 15,
+                "y": 0
+            },
+            "id": 2,
+            "options": {
+                "colWidth": 0.93,
+                "legend": {
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                },
+                "rowHeight": 0.4,
+                "showValue": "auto",
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P1F56AAD66C29AD97"
+                    },
+                    "query": "from(bucket: \"net_response\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"app_net_response\")\n  |> filter(fn: (r) => r[\"app_name\"] =~ /\\b${app_name:regex}\\b/)\n  |> filter(fn: (r) => r[\"_field\"] == \"result_code\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+                    "refId": "A"
+                }
+            ],
+            "title": "Status history TCP connection $app_name",
+            "type": "status-history"
+        }
+    ],
+    "refresh": "",
+    "schemaVersion": 39,
+    "tags": [ ],
+    "templating": {
+        "list": [
+            {
+                "current": {
+                    "selected": false,
+                    "text": [
+                        "IOS XR Programmabilty AlwaysOn"
+                    ],
+                    "value": [
+                        "IOS XR Programmabilty AlwaysOn"
+                    ]
+                },
+                "datasource": {
+                    "type": "influxdb",
+                    "uid": "P1F56AAD66C29AD97"
+                },
+                "definition": "import \"influxdata/influxdb/schema\"\n\nschema.tagValues(bucket: \"net_response\", tag: \"app_name\")",
+                "hide": 0,
+                "includeAll": true,
+                "label": "Application",
+                "multi": true,
+                "name": "app_name",
+                "options": [ ],
+                "query": "import \"influxdata/influxdb/schema\"\n\nschema.tagValues(bucket: \"net_response\", tag: \"app_name\")",
+                "refresh": 1,
+                "regex": "",
+                "skipUrlSync": false,
+                "sort": 0,
+                "type": "query"
+            }
+        ]
+    },
+    "time": {
+        "from": "now-5m",
+        "to": "now"
+    },
+    "timepicker": { },
+    "timezone": "",
+    "title": "Service Detail View",
+    "uid": "a99f3e56-71bf-427b-b027-e2263fb09600",
+    "version": 1,
+    "weekStart": ""
+}

@@ -1,0 +1,503 @@
+{
+    "annotations": {
+        "list": [
+            {
+                "builtIn": 1,
+                "datasource": {
+                    "type": "grafana",
+                    "uid": "-- Grafana --"
+                },
+                "enable": true,
+                "hide": true,
+                "iconColor": "rgba(0, 211, 255, 1)",
+                "name": "Annotations & Alerts",
+                "target": {
+                    "limit": 100,
+                    "matchAny": false,
+                    "tags": [ ],
+                    "type": "dashboard"
+                },
+                "type": "dashboard"
+            }
+        ]
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 2,
+    "links": [ ],
+    "liveNow": false,
+    "panels": [
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P1F56AAD66C29AD97"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisBorderShow": false,
+                        "axisCenteredZero": false,
+                        "axisColorMode": "text",
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "drawStyle": "line",
+                        "fillOpacity": 23,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "insertNulls": false,
+                        "lineInterpolation": "linear",
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "auto",
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "mappings": [ ],
+                    "min": 0,
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unit": "short",
+                    "unitScale": true
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byFrameRefID",
+                            "options": "up"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Connected"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byFrameRefID",
+                            "options": "idle"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Idle"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byFrameRefID",
+                            "options": "total"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Total"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Idle"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "red",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 21,
+                "w": 9,
+                "x": 0,
+                "y": 0
+            },
+            "hideTimeOverride": false,
+            "id": 9,
+            "options": {
+                "legend": {
+                    "calcs": [
+                        "last",
+                        "min",
+                        "max"
+                    ],
+                    "displayMode": "table",
+                    "placement": "right",
+                    "showLegend": true,
+                    "sortBy": "Max",
+                    "sortDesc": true
+                },
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "pluginVersion": "10.2.2",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P1F56AAD66C29AD97"
+                    },
+                    "query": "from(bucket: \"fortios_monitor_switch_controller\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"managed_switch_stats\")\n  |> filter(fn: (r) => r[\"_field\"] == \"status\")\n  |> filter(fn: (r) => r[\"_value\"] == \"Connected\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> group(columns: [\"_time\"])\n  |> count()\n  |> group()\n  |> yield(name: \"last\")",
+                    "refId": "up"
+                },
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P1F56AAD66C29AD97"
+                    },
+                    "hide": false,
+                    "query": "from(bucket: \"fortios_monitor_switch_controller\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"managed_switch_stats\")\n  |> filter(fn: (r) => r[\"_field\"] == \"status\")\n  |> filter(fn: (r) => r[\"_value\"] == \"Idle\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> group(columns: [\"_time\"])\n  |> count()\n  |> group()\n  |> yield(name: \"last\")",
+                    "refId": "idle"
+                },
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P1F56AAD66C29AD97"
+                    },
+                    "hide": false,
+                    "query": "from(bucket: \"fortios_monitor_switch_controller\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"managed_switch_stats\")\n  |> filter(fn: (r) => r[\"_field\"] == \"status\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> group(columns: [\"_time\"])\n  |> count()\n  |> group()\n  |> yield(name: \"last\")",
+                    "refId": "total"
+                }
+            ],
+            "title": "Switch state (${__from:date:YYYY-MM-DD HH:mm:ss} - ${__to:date:YYYY-MM-DD HH:mm:ss})",
+            "transformations": [
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {
+                            "_field": false,
+                            "_measurement": true,
+                            "_start": true,
+                            "_stop": true,
+                            "host": true,
+                            "host_hostname": true,
+                            "id": true,
+                            "serial_number": true
+                        },
+                        "indexByName": {
+                            "_field": 3,
+                            "_measurement": 4,
+                            "_start": 1,
+                            "_stop": 2,
+                            "_value": 9,
+                            "device": 0,
+                            "host": 5,
+                            "host_hostname": 6,
+                            "id": 7,
+                            "name": 8
+                        },
+                        "renameByName": {
+                            "_field": "Measurement",
+                            "_value": "Sum",
+                            "device": "Hostname",
+                            "hostname": "Hostname",
+                            "interface": "Interface",
+                            "name": "Interface"
+                        }
+                    }
+                }
+            ],
+            "type": "timeseries"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P1F56AAD66C29AD97"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "custom": {
+                        "fillOpacity": 70,
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "insertNulls": false,
+                        "lineWidth": 0,
+                        "spanNulls": false
+                    },
+                    "displayName": "${__field.labels.name}",
+                    "mappings": [ ],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unitScale": true
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "status"
+                        },
+                        "properties": [
+                            {
+                                "id": "mappings",
+                                "value": [
+                                    {
+                                        "options": {
+                                            "Connected": {
+                                                "color": "green",
+                                                "index": 1
+                                            },
+                                            "Idle": {
+                                                "color": "red",
+                                                "index": 0
+                                            }
+                                        },
+                                        "type": "value"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 21,
+                "w": 15,
+                "x": 9,
+                "y": 0
+            },
+            "id": 13,
+            "options": {
+                "alignValue": "left",
+                "legend": {
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                },
+                "mergeValues": true,
+                "rowHeight": 0.9,
+                "showValue": "auto",
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P1F56AAD66C29AD97"
+                    },
+                    "query": "from(bucket: \"fortios_monitor_switch_controller\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"managed_switch_stats\")\n  |> filter(fn: (r) => r[\"name\"] =~ /\\b${switch_name:regex}\\b/)\n  |> filter(fn: (r) => r[\"_field\"] == \"status\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+                    "refId": "A"
+                }
+            ],
+            "title": "Switch state  $switch_name (${__from:date:YYYY-MM-DD HH:mm:ss} - ${__to:date:YYYY-MM-DD HH:mm:ss})",
+            "type": "state-timeline"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P1F56AAD66C29AD97"
+            },
+            "description": "",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "custom": {
+                        "align": "auto",
+                        "cellOptions": {
+                            "type": "auto"
+                        },
+                        "inspect": false
+                    },
+                    "mappings": [ ],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "red",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unitScale": true
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Sum"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.cellOptions",
+                                "value": {
+                                    "mode": "gradient",
+                                    "type": "color-background"
+                                }
+                            },
+                            {
+                                "id": "unit",
+                                "value": "short"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 21
+            },
+            "id": 14,
+            "options": {
+                "cellHeight": "sm",
+                "footer": {
+                    "countRows": false,
+                    "fields": "",
+                    "reducer": [
+                        "sum"
+                    ],
+                    "show": false
+                },
+                "showHeader": true
+            },
+            "pluginVersion": "10.3.3",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P1F56AAD66C29AD97"
+                    },
+                    "query": "from(bucket: \"fortios_monitor_switch_controller\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"managed_switch_port_stats\")\n  |> filter(fn: (r) => r[\"_field\"] == \"crc-alignments\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> difference()\n  |> filter(fn: (r) => r._value > 0)\n  |> sum()\n  |> group(columns: [\"serial\"])\n  |> group()",
+                    "refId": "A"
+                }
+            ],
+            "timeFrom": "3h",
+            "title": "Switch Port errors (${__from:date:YYYY-MM-DD HH:mm:ss} - ${__to:date:YYYY-MM-DD HH:mm:ss})",
+            "transformations": [
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {
+                            "_field": false,
+                            "_measurement": true,
+                            "_start": true,
+                            "_stop": true,
+                            "bucket": true,
+                            "controller": true,
+                            "host": true,
+                            "port": false,
+                            "serial": false
+                        },
+                        "includeByName": { },
+                        "indexByName": {
+                            "_field": 3,
+                            "_measurement": 4,
+                            "_start": 1,
+                            "_stop": 2,
+                            "_value": 9,
+                            "bucket": 5,
+                            "controller": 6,
+                            "host": 7,
+                            "port": 8,
+                            "serial": 0
+                        },
+                        "renameByName": {
+                            "_field": "Measurement",
+                            "_measurement": "",
+                            "_value": "Sum",
+                            "port": "Interface"
+                        }
+                    }
+                }
+            ],
+            "type": "table"
+        }
+    ],
+    "refresh": "",
+    "revision": 1,
+    "schemaVersion": 39,
+    "tags": [ ],
+    "templating": {
+        "list": [
+            {
+                "current": {
+                    "selected": true,
+                    "text": [
+                        "All"
+                    ],
+                    "value": [
+                        "$__all"
+                    ]
+                },
+                "datasource": {
+                    "type": "influxdb",
+                    "uid": "P1F56AAD66C29AD97"
+                },
+                "definition": "import \"influxdata/influxdb/schema\"\n\nschema.tagValues(bucket: \"fortios_monitor_switch_controller\", tag: \"name\")",
+                "hide": 0,
+                "includeAll": true,
+                "label": "Switch",
+                "multi": true,
+                "name": "switch_name",
+                "options": [ ],
+                "query": "import \"influxdata/influxdb/schema\"\n\nschema.tagValues(bucket: \"fortios_monitor_switch_controller\", tag: \"name\")",
+                "refresh": 1,
+                "regex": "",
+                "skipUrlSync": false,
+                "sort": 0,
+                "type": "query"
+            }
+        ]
+    },
+    "time": {
+        "from": "now-30m",
+        "to": "now"
+    },
+    "timepicker": { },
+    "timezone": "",
+    "title": "Switch Overview",
+    "uid": "I_kWUhQ4k",
+    "version": 1,
+    "weekStart": ""
+}
